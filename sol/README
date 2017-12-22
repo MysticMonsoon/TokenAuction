@@ -1,0 +1,33 @@
+How It All Goes Down
+--------------------
+ * publish the OrganizeFunds contract
+ * add accounts to organizeFunds
+ * publish the BurnableToken contract
+ * in the BurnableToken contract, initialize the tokens supply (15,000,000,000 + presale tokens, 3 decimals)
+ * publish the TokenAuction contract
+ * call the transfer function in the BurnableToken contract to transfer presale tokens (if applicable)
+ * call the transfer function in the BurnableToken contract to transfer all remaining tokens from the BurnableToken owner to the TokenAuction contract
+ * call setToken in the TokenAuction contract to set the token (BurnableToken), multiplier (1000), and underwriter (OrganizeFunds)
+ * call reserveDeveloperTokens in the TokenAuction contract to set aside developer tokens (developerPctX10K = 333333)
+ * call setAuctionParms in the TokenAuction contract to set the auction dates, followed by housekeep
+ * call setRestrictedAcct in the BurnableToken contract to restrict developer tokens (if desired)
+ * at the auction start time, call housekeep in the TokenAuction contract
+ * call houseKeep in the TokenAuction contract at the end of the auction bidding period
+ * execute the Auction Valuation tool to determine the strike price
+ * call setStrikePrice in the TokenAuction contract
+ * after sale period ends, check for stragler bids.... make announcements, etc...
+ * officially end the sale by calling housekeep. note, this can be delayed....
+ * call expire for any stragler bids
+ * call payUnderwriter in the TokenAuction contract
+ * call doDeveloperGrant in the TokenAuction contract
+ * call distribute on OrganizeFunds contract
+ * call withdraw on OrganizeFunds contract
+
+Tentative Auction Details
+-------------------------
+Number of Tokens for auction: ~10,000,000
+Decimals: 3
+Developer grant: %33 (X 10K = 333333)
+Total tokens (including decimals): 15,000,000,000
+Developer reserve: = 15,000,000,000 * 333333 / 1000000 = 4,999,995,000
+Exact total tokens for auction = 10,000,005,000

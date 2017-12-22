@@ -1,0 +1,23 @@
+{
+  "name": "auction valuation tool",
+  "version": "1.0.0",
+  "description": "compute strike price for token auction",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "MysticMonsoon",
+  "license": "ISC",
+  "dependencies": {
+    "bn": "^1.0.1",
+    "bn.js": "^4.11.8",
+    "buffer": "^5.0.7",
+    "bufferutil": "^3.0.2",
+    "ethereumjs-abi": "^0.6.4",
+    "ethereumjs-tx": "^1.3.3",
+    "ethereumjs-util": "^5.1.2",
+    "keccakjs": "^0.2.1",
+    "node-fetch": "^1.7.2",
+    "node-rsa": "^0.4.2"
+  }
+}

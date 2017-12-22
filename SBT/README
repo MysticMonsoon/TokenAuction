@@ -1,0 +1,12 @@
+Secret Bid Tools
+
+before you can build you need to execute:
+
+npm install
+
+this will create the node_modules directory
+
+
+to generate rsa private, public keys:
+ openssl genrsa -out rsa_2048_priv.pem 2048
+ openssl rsa -pubout -in rsa_2048_priv.pem -out rsa_2048_pub.pem

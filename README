@@ -1,0 +1,70 @@
+TokenAuction
+===============
+
+This project is a collection of Ethereum contracts and related utilities to
+implement a Blind Token Auction. The contract code borrows heavily from Nick
+Johnson's work and subsequent discussion on the ethereum reddit.
+
+The project has 3 parts:
+
+1) The sol directory has the contract code. There the BurnableToken contract
+represents a generic burnable token. That is, a token that accrues value for
+token holders -- but the value can only be collected by burning the token. The
+TokenAuction contract handles the actual auction/ICO. I chose the following
+design details:
+
+ * The auction is for a fixed/limited number of tokens
+
+ * Tokens are purchased in three steps. In the first step a prospective
+   purchaser submits a secret bid, together with a deposit. In the second step,
+   after the end of the bidding period, the proprietor of the ICO sets the
+   Strike-Price. In the third stage each prospective purchaser executes/reveals
+   their bid. If a bid is above the strike price, then tokens are delivered; if
+   a bid is below the strike price, then the deposit is refunded.
+
+ * The auction is blind; that is, bids are secret during the bidding period
+
+ * When submitting a secret bid, an encrypted version is also submitted so that
+   the proprietor of the ICO can see the bids. This is necessary so that the
+   proprietor can set an optimal Strike-Price.
+
+2) The SBT (Secret Bid Tools) directory contains mock-up web pages for
+   submitting and executing/revealing secret bids.
+
+   The submit page creates a hash of the bid (price and quantity) together with
+   a salt that is derived from the purchaser's signature of a random message. The
+   purpose of the salt is to discourage brute force attempts to decode the hashes.
+   The submit page also encrypts the secret bid using the public ssh key of the
+   proprietor and submits the encrypted bid together with the hash, and an appropriate
+   deposit.
+
+   The execute page reveals the bid, thereby purchasing the tokens (if the bid
+   exceeds the Strike-Price). The execute page also requests any refund that
+   might be due -- the entire deposit if the bid was less than the Strike-Price,
+   or the excess of the deposit over the Strike-Price-determined cost.
+
+   Before you build the tools you need to set
+   CONTRACT_ADDR and auctioneerPubkey (SSH key in PEM format)
+   for example:
+     openssl genrsa -out auctioneerPrivkey.pem 2048
+     openssl rsa -pubout -in auctioneerPrivkey.pem -out auctioneerPubkey.pem
+
+3) The AVT (Auction Valuation Tool) directory contains a utility for the
+   proprietor of the ICO to decrypt secret bids, and to determine the optimal
+   Strike-Price. The code is meant to be run under node.js.
+
+   To use the tool, in index.js you need to set:
+   CONTRACT_ADDR,
+   ETHERSCAN_APIKEY, and
+   auctioneerPrivkey (SSH key in PEM format)
+
+   also, if you want to disqualify invalide bids, or if you want to "expire"
+   bids that have not been executed (after the end of the sale period), then
+   you will need to set the ACCT and PRIVATE_KEY of the TokenAuction owner.
+
+
+This code is provided free-of-charge, in the hopes that someone will
+use it (or a derivative) in their ICO. I only ask that I get a mention
+for any such use.
+
+-Pratyush
