@@ -51,6 +51,12 @@ contract BurnableToken is iBurnableToken, SafeMath {
     _;
   }
 
+  //this is to protect from short-address attack. use this to verify size of args, especially when an address arg preceeds
+  //a value arg. see: https://www.reddit.com/r/ethereum/comments/63s917/worrysome_bug_exploit_with_erc20_token/dfwmhc3/
+  modifier onlyPayloadSize(uint size) {
+    assert(msg.data.length >= size + 4);
+    _;
+  }
 
   //
   //constructor
@@ -66,7 +72,7 @@ contract BurnableToken is iBurnableToken, SafeMath {
 
   function totalSupply() public constant returns (uint supply) { supply = tokenSupply; }
 
-  function transfer(address _to, uint _value) public preventRestricted returns (bool success) {
+  function transfer(address _to, uint _value) public preventRestricted onlyPayloadSize(2*32) returns (bool success) {
     //if token supply was not limited then we would prevent wrap:
     //if (balances[msg.sender] >= _value && balances[_to] + _value > balances[_to])
     if (balances[msg.sender] >= _value && _value > 0) {
@@ -80,7 +86,7 @@ contract BurnableToken is iBurnableToken, SafeMath {
   }
 
 
-  function transferFrom(address _from, address _to, uint _value) public returns (bool success) {
+  function transferFrom(address _from, address _to, uint _value) onlyPayloadSize(3*32) public returns (bool success) {
     //if token supply was not limited then we would prevent wrap:
     //if (balances[_from] >= _value && approvals[_from][msg.sender] >= _value && balances[_to] + _value > balances[_to])
     if (balances[_from] >= _value && approvals[_from][msg.sender] >= _value && _value > 0) {
@@ -100,7 +106,7 @@ contract BurnableToken is iBurnableToken, SafeMath {
   }
 
 
-  function approve(address _spender, uint _value) public preventRestricted returns (bool success) {
+  function approve(address _spender, uint _value) public preventRestricted onlyPayloadSize(2*32) returns (bool success) {
     approvals[msg.sender][_spender] = _value;
     ApprovalEvent(msg.sender, _spender, _value);
     return true;
